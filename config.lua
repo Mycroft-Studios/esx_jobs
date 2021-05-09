@@ -204,5 +204,5 @@ Config.Uniforms = {
 			chain_1 = 0,    chain_2 = 0,
 			ears_1 = 2,     ears_2 = 0
 		}
-	},
+	}
 }
