@@ -15,13 +15,13 @@ INSERT INTO `jobs` (name, label) VALUES
 ;
 
 INSERT INTO `job_grades` (job_name, grade, name, label, salary, skin_male, skin_female) VALUES
-	('lumberjack', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
-	('fisherman', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
-	('fueler', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
-	('reporter', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
-	('tailor',0,'employee','Intérimaire',0,'{}', '{}'),
-	('miner', 0, 'employee', 'Intérimaire', 0, '{}', '{}'),
-	('slaughterer',0,'employee','Intérimaire',0,'{}', '{}')
+	('lumberjack', 1, 'employee', 'Intérimaire', 0, '{}', '{}'),
+	('fisherman', 1, 'employee', 'Intérimaire', 0, '{}', '{}'),
+	('fueler', 1, 'employee', 'Intérimaire', 0, '{}', '{}'),
+	('reporter', 1, 'employee', 'Intérimaire', 0, '{}', '{}'),
+	('tailor', 1,'employee','Intérimaire',0,'{}', '{}'),
+	('miner', 1, 'employee', 'Intérimaire', 0, '{}', '{}'),
+	('slaughterer', 1,'employee','Intérimaire',0,'{}', '{}')
 ;
 
 INSERT INTO `items` (`name`, `label`, `weight`) VALUES
