@@ -34,11 +34,11 @@ ESX = nil
 Citizen.CreateThread(function()
 	while ESX == nil do
 		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-		Citizen.Wait(0)
+		Citizen.Wait(10)
 	end
 	
 	while ESX.GetPlayerData().job == nil do
-		Citizen.Wait(10)
+		Citizen.Wait(15)
 	end
 
 	PlayerData = ESX.GetPlayerData()
@@ -51,14 +51,34 @@ AddEventHandler('esx:playerLoaded', function(xPlayer)
 	refreshBlips()
 end)
 
+function setUniform(uniform, playerPed)
+	TriggerEvent('skinchanger:getSkin', function(skin)
+		local uniformObject
+
+		if skin.sex == 0 then
+			uniformObject = Config.Uniforms[uniform].male
+		else
+			uniformObject = Config.Uniforms[uniform].female
+		end
+
+		if uniformObject then
+			TriggerEvent('skinchanger:loadClothes', skin, uniformObject)
+		else
+			ESX.ShowNotification(_U('no_outfit'))
+		end
+	end)
+end
+
 function OpenMenu()
 	ESX.UI.Menu.CloseAll()
+	local playerPed = PlayerPedId()
+	local job = ESX.GetPlayerData().job.name
 
 	ESX.UI.Menu.Open('default', GetCurrentResourceName(), 'cloakroom',
 	{
 		title    = _U('cloakroom'),
 		elements = {
-			{label = _U('job_wear'),     value = 'job_wear'},
+			{label = _U('job_wear'),     uniform = job},
 			{label = _U('citizen_wear'), value = 'citizen_wear'}
 		}
 	}, function(data, menu)
@@ -67,14 +87,26 @@ function OpenMenu()
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
 				TriggerEvent('skinchanger:loadSkin', skin)
 			end)
-		elseif data.current.value == 'job_wear' then
+		elseif data.current.uniform then
+			setUniform(data.current.uniform, playerPed)
 			onDuty = true
+		elseif data.current.value == 'freemode_ped' then
+			onDuty = true
+			local modelHash
 			ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin, jobSkin)
 				if skin.sex == 0 then
-					TriggerEvent('skinchanger:loadClothes', skin, jobSkin.skin_male)
+					modelHash = GetHashKey(data.current.maleModel)
 				else
-					TriggerEvent('skinchanger:loadClothes', skin, jobSkin.skin_female)
+					modelHash = GetHashKey(data.current.femaleModel)
 				end
+
+				ESX.Streaming.RequestModel(modelHash, function()
+					SetPlayerModel(PlayerId(), modelHash)
+					SetModelAsNoLongerNeeded(modelHash)
+					SetPedDefaultComponentVariation(PlayerPedId())
+
+					TriggerEvent('esx:restoreLoadout')
+				end)
 			end)
 		end
 
